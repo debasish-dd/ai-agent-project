@@ -36,7 +36,7 @@ const sendMail = async (options) => {
       text: emailText, // Plain-text version of the message
       html: emailHTML, // HTML version of the message
     });
-    console.log("Message sent:", info.messageId);
+    
   } catch (error) {
     console.error("Error sending email:", error);
     throw new Error("Error while sending email");
@@ -44,41 +44,27 @@ const sendMail = async (options) => {
 };
 
 const emailVerificationMailGenContent = (username, otp) => {
-  return {
+ return {
     body: {
       name: username,
-      intro:
+      intro: [
         "Thanks for choosing our app! We are very excited to have you here!!",
-      action: {
-        instructions:
-          "To get started with Our App, use the otp to verify your account:",
-        button: {
-          color: "#375a46",
-          text: "Confirm your account",
-          otp: otp,
-        },
-      },
-      outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help.",
+        `Your OTP to verify your account is: ${otp}`,
+      ],
+      outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
     },
   };
 };
 
 const resetPasswordMailGenContent = (username, otp) => {
-  return {
+ return {
     body: {
       name: username,
-      intro: "Welcome back!",
-      action: {
-        instructions: "please use the otp to reset your password:",
-        button: {
-          color: "#9b6413", // Optional action button color
-          text: "Reset Password",
-          otp,
-        },
-      },
-      outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help.",
+      intro: [
+        "welcome back!",
+        `Your OTP to reset your account is: ${otp}`,
+      ],
+      outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
     },
   };
 };
@@ -87,13 +73,14 @@ const emailNotificationForTicketMailGenContent = (username, ticket) => {
   return {
     body: {
       name: username,
-      intro: "You've assigned a task go check it out",
-      outro: `The title -> ${ticket.title}\n
-              The description -> ${ticket.description}\n
-              priorty -> ${ticket.priorty}\n
-              deadlines -> ${ticket.deadlines}
-      `
-        
+      intro: [
+        "You've been assigned a new task, here are the details:",
+        `Title: ${ticket.title}`,
+        `Description: ${ticket.description}`,
+        `Priority: ${ticket.priority}`,
+        `Deadline: ${ticket.deadline}`,
+      ],
+      outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
     },
   };
 };
