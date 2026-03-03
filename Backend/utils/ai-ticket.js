@@ -1,12 +1,14 @@
-import { createAgent, gemini } from "@inngest/agent-kit";
+import { createAgent, openai} from "@inngest/agent-kit";
 
 const analyzeTicket = async (ticket) => {
-    
+    createAgent({
+        
+    })
     const supportAgent = createAgent({
-        model: gemini({
-            model: "gemini-2.0-flash-lite",
-            apiKey: process.env.GEMINI_API_KEY,
-        }),
+        model: openai({
+            model: "gpt-5-nano",
+            apiKey: process.env.OPENAI_API_KEY
+        }) ,
         name: "AI Ticket Triage Assistant",
         system: `
             You are an expert AI assistant that processes technical support tickets. 
@@ -54,9 +56,6 @@ const analyzeTicket = async (ticket) => {
     `);
 
     const raw = response.output[0].content;
-    console.log("response->" , response);
-    console.log("raw->"  , raw);
-    
     try {
         const match = raw.match(/```json\s*([\s\S]*?)\s*```/i);
         const jsonString = match? match[1]: raw.trim();
