@@ -12,6 +12,9 @@ router.patch("/update-user", isLogin, updateUser)
 router.get("/get-users", isLogin, getUsers)
 router.post("/verify" , verifyUser)
 
+router.get("/check-auth", isLogin, (req, res) => {
+  res.status(200).json({ message: "User is authenticated", success: true, user: req.user });
+});
 
 
 export default router
