@@ -1,59 +1,36 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
-import App from "./App";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CheckAuth from "./components/CheckAuth";
-import Tickets from "./pages/Tickets";
-import DetailedTicket from "./pages/Tickets";
+import Tickets from "./pages/Tickets"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
+import PublicLayout from "./layouts/PublicLayout";
+import ProtectedLayout from "./layouts/ProtectedLayout";
+import DetailedTicket from "./pages/DetailedTicket";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <CheckAuth protected={true}>
-              <Tickets />
-            </CheckAuth>
-          }
-        />
-        <Route
-          path="/ticket/:id"
-          element={
-            <CheckAuth protected={true}>
-              <DetailedTicket />
-            </CheckAuth>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <CheckAuth protected={false}>
-              <Login />
-            </CheckAuth>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <CheckAuth protected={false}>
-              <Signup />
-            </CheckAuth>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <CheckAuth protected={true}>
-              <Admin />
-            </CheckAuth>
-          }
-        />
+        {/* PUBLIC ROUTES */}
+        <Route element={<CheckAuth isProtected={false} />}>
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+        </Route>
+
+        {/* PROTECTED ROUTES */}
+        <Route element={<CheckAuth isProtected={true} />}>
+          <Route element={<ProtectedLayout />}>
+            <Route path="/tickets" element={<Tickets/>} />
+            <Route path="/tickets/:id" element={<DetailedTicket />} />
+            <Route path="/admin" element={<Admin />} />
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>,

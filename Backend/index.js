@@ -13,7 +13,11 @@ import ticketRouter from "./routes/ticket.route.js"
 const app = e();
 
 app.use(e.urlencoded({extended: true}))
-app.use(cors())
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true 
+}))
 app.use(e.json())
 app.use(cookieParser())
 
