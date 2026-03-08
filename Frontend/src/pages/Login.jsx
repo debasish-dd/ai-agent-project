@@ -1,8 +1,13 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../store/UserContext'
+
 
 function Login() {
+
+  const { setUser } = useUser()
+
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
@@ -20,7 +25,7 @@ function Login() {
         { email: form.email, password: form.password },
         { withCredentials: true }
       )
-  
+      setUser(response.data.user)
       if (response.status === 200) navigate("/tickets")
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password')
@@ -30,11 +35,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-80
-    
-    
-    
-    0 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-800 flex items-center justify-center px-4">
       <div className="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-lg p-8 shadow-xl">
 
         <div className="mb-7">

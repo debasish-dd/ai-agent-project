@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useUser } from "../store/UserContext";
+import { Navigate } from "react-router-dom"
+
 
 function Admin() {
+
+  const { user } = useUser()
+
+  if (!user) return <Navigate to="/" />
+  if (user.role !== "admin") return <Navigate to="/tickets" />
+
+
   const [allusers, setAllusers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
