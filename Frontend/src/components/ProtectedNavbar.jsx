@@ -45,6 +45,7 @@ function ProtectedNavbar() {
       <nav className="flex justify-between bg-gray-900 border-b border-gray-800">
         <ul className="flex gap-4 p-3">
           <Link to="/tickets" className={buttonStyle}>Tickets</Link>
+          <Link to="/admin" className={buttonStyle}>Admin</Link>
         </ul>
         <div className="flex gap-4 p-3">
           <button onClick={() => setModalOpen(true)} className={buttonStyle}>Create Ticket</button>
