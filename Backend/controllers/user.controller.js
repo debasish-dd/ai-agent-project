@@ -114,9 +114,15 @@ export const login = async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
     );
 
     res.cookie("refresh_token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -143,19 +149,35 @@ export const logoutUser = async (req, res) => {
   try {
     const userID = req.user?.id;
     const user = await User.findById(userID);
-    res.cookie("refresh_token", "", {
-      expires: new Date(0),
-    });
+
+    if (!user) {
+      res.clearCookie("refresh_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
 
     user.refreshToken = undefined;
     await user.save({ validateBeforeSave: false });
 
-    res
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res
       .status(200)
-      .json({ message: "user logged out succesfully", success: true });
+      .json({ message: "User logged out successfully", success: true });
   } catch (error) {
     console.error("Error logging out user:", error);
-    res.status(500).json({ message: "Error logging out user", success: false });
+    return res
+      .status(500)
+      .json({ message: "Error logging out user", success: false });
   }
 };
 

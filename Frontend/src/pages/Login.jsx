@@ -5,102 +5,96 @@ import { useNavigate } from 'react-router-dom'
 function Login() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/users/login",
-        {
-          email: form.email,
-          password: form.password
-        },
+        { email: form.email, password: form.password },
         { withCredentials: true }
-      );
-      console.log("res->", response);
-      if (response.status===200) {
-        navigate("/tickets")
-      }
-    } catch (error) {
-      setLoading(true)
-      setError(error.response?.data?.message || 'Invalid email or password')
-      console.log(error);
-      
-    } finally{
+      )
+  
+      if (response.status === 200) navigate("/tickets")
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid email or password')
+    } finally {
       setLoading(false)
     }
-
   }
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
-      <div className="hero-content flex-col lg:flex-row-reverse gap-12 w-full max-w-4xl">
+    <div className="min-h-screen bg-gray-80
+    
+    
+    
+    0 flex items-center justify-center px-4">
+      <div className="w-full max-w-sm bg-gray-900 border border-gray-800 rounded-lg p-8 shadow-xl">
 
-        {/* Left text */}
-        <div className="text-center lg:text-left max-w-sm">
-          <div className="badge badge-primary badge-outline mb-3 text-xs tracking-widest uppercase">Welcome back</div>
-          <h1 className="text-4xl font-bold text-base-content leading-tight">
-            Log in to your account
-          </h1>
-          <p className="py-4 text-base-content/50 text-sm leading-relaxed">
-            Access your dashboard, manage your projects, and pick up right where you left off.
-          </p>
+        <div className="mb-7">
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Sign in</h1>
+          <p className="text-sm text-gray-500 mt-1">Enter your credentials to continue</p>
         </div>
 
-        {/* Card */}
-        <div className="card bg-base-100 w-full max-w-sm shadow-xl border border-base-300 shrink-0">
-          <form className="card-body gap-4" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1">
+            <label className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 text-sm border border-gray-700 rounded-md bg-gray-800 text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition"
+            />
+          </div>
 
-            <div className="form-control gap-1">
-              <label className="label py-0">
-                <span className="label-text text-xs font-semibold uppercase tracking-widest text-base-content/60">Email</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-                className="input input-bordered focus:input-primary w-full"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="space-y-1">
+            <label className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 text-sm border border-gray-700 rounded-md bg-gray-800 text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition"
+            />
+          </div>
 
-            <div className="form-control gap-1">
-              <label className="label py-0">
-                <span className="label-text text-xs font-semibold uppercase tracking-widest text-base-content/60">Password</span>
-                <a className="label-text-alt link link-primary text-xs">Forgot password?</a>
-              </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                className="input input-bordered focus:input-primary w-full"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {error && (
+            <p className="text-xs text-red-400">{error}</p>
+          )}
 
-            <button
-              type="submit"
-              className={`btn btn-primary w-full mt-1 ${loading ? 'loading' : ''}`}
-              disabled={loading}
-            >
-              {loading ? 'Logging in…' : 'Login'}
-            </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 bg-white hover:bg-gray-200 text-gray-900 text-sm font-semibold rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
 
-            <p className="text-center text-sm text-base-content/40">
-              No account?{' '}
-              <button type="button" onClick={() => navigate('/signup')} className="link link-primary font-medium">
-                Sign up
-              </button>
-            </p>
-
-          </form>
-        </div>
+        <p className="mt-6 text-center text-xs text-gray-600">
+          Don't have an account?{' '}
+          <span
+            onClick={() => navigate('/signup')}
+            className="text-gray-300 font-semibold underline cursor-pointer hover:text-white transition"
+          >
+            Sign up
+          </span>
+        </p>
 
       </div>
     </div>

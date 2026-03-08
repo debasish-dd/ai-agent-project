@@ -4,43 +4,26 @@ import axios from "axios";
 
 function CheckAuth({ children, isProtected }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(true) 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get(
+        await axios.get(
           "http://localhost:3000/api/v1/users/check-auth",
-          { withCredentials: true },
+          { withCredentials: true }
         );
-        console.log("res-" , response);
-        
-        setIsAuthenticated(response.status === 200);
+        // if we're here, user is authenticated
+        if (!isProtected) navigate("/tickets");
       } catch (error) {
-        if (error.response?.status === 401) {
-          setIsAuthenticated(false); 
-        } else {
-          console.error("Unexpected auth error:", error); 
-        }
-        setIsAuthenticated(false);
+        // if we're here, user is not authenticated
+        if (isProtected) navigate("/");
       } finally {
         setLoading(false);
       }
     })();
   }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      if (isProtected && !isAuthenticated) {
-        navigate("/");
-      }
-
-      if (!isProtected && isAuthenticated) {
-        navigate("/tickets");
-      }
-    }
-  }, [navigate, loading, isAuthenticated, isProtected]);
 
   if (loading) {
     return <div>Loading...</div>;
